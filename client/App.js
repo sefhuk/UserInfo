@@ -4,6 +4,7 @@ import HomeScreen from './screen/HomeScreen';
 import LoginScreen from './screen/LoginScreen';
 import RegisterScreen from './screen/RegisterScreen';
 import { headerStyle } from './config/globalStyles';
+import { Text, TouchableOpacity } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +20,11 @@ const App = () => {
         <Stack.Screen
           name='Login'
           component={LoginScreen}
-          options={{ title: '로그인', ...headerStyle }}
+          options={{
+            title: '로그인',
+            ...headerStyle,
+            headerBackVisible: false,
+          }}
         />
         <Stack.Screen
           name='Register'

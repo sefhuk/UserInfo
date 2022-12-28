@@ -5,11 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import { textStyle } from '../config/globalStyles';
+import { containerStyle, textStyle } from '../config/globalStyles';
 
 const HomeScreen = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={containerStyle}>
       <View style={styles.wrap}>
         <View style={{ flex: 0.4, justifyContent: 'flex-end' }}>
           <Text style={{ ...styles.title, ...textStyle }}>USER INFO</Text>
@@ -45,10 +45,6 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
   wrap: {
     flex: 0.5,
     marginTop: '40%',
