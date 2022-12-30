@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,10 +7,43 @@ import {
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import { containerStyle, textStyle } from '../config/globalStyles';
+import axios from 'axios';
+import Config from 'react-native-config';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleChangeIdInput = (text) => {
+    setId(text);
+  };
+
+  const handleChangePasswordInput = (text) => {
+    setPassword(text);
+  };
+
+  const handleClickLogin = () => {
+    axios
+      .get(`http://${Config.HTTP_HOST}/account/login`, {
+        params: {
+          id: id,
+          password: password,
+        },
+      })
+      .then((res) => {
+        if (!res.data[0]) {
+          Alert.alert('회원정보가 일치하지 않습니다');
+        } else {
+          console.log(res.data[0].name);
+          Alert.alert(`${res.data[0].name}님 환영합니다`);
+          navigation.push('User', { name: res.data[0].name });
+        }
+      });
+  };
+
   return (
     <SafeAreaView style={containerStyle}>
       <KeyboardAvoidingView
@@ -33,16 +67,18 @@ const LoginScreen = () => {
             style={styles.textInput}
             placeholder='아이디'
             placeholderTextColor='white'
+            onChangeText={handleChangeIdInput}
           />
           <TextInput
             style={styles.textInput}
             placeholder='비밀번호'
             placeholderTextColor='white'
+            onChangeText={handleChangePasswordInput}
             secureTextEntry='true'
           />
         </View>
         <View style={styles.submit}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleClickLogin}>
             <Text style={{ ...textStyle, fontSize: '30%' }}>로그인</Text>
           </TouchableOpacity>
         </View>
@@ -85,4 +121,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-

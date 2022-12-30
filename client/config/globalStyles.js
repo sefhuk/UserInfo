@@ -1,3 +1,8 @@
+export const containerStyle = {
+  flex: 1,
+  backgroundColor: 'black',
+};
+
 export const textStyle = {
   color: 'white',
 };
