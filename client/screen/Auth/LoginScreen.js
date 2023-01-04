@@ -9,13 +9,22 @@ import {
   KeyboardAvoidingView,
   Alert,
 } from 'react-native';
-import { containerStyle, textStyle } from '../config/globalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { containerStyle, textStyle } from '../../config/globalStyles';
 import axios from 'axios';
-import Config from 'react-native-config';
 
 const LoginScreen = ({ navigation }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+
+  const save = async (user) => {
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      console.log('good save');
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const handleChangeIdInput = (text) => {
     setId(text);
@@ -27,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleClickLogin = () => {
     axios
-      .get(`http://${Config.HTTP_HOST}/account/login`, {
+      .get(`http://hyuk.ml:19001/account/login`, {
         params: {
           id: id,
           password: password,
@@ -37,11 +46,15 @@ const LoginScreen = ({ navigation }) => {
         if (!res.data[0]) {
           Alert.alert('회원정보가 일치하지 않습니다');
         } else {
-          console.log(res.data[0].name);
+          save(res.data[0]);
+          navigation.replace('Main');
           Alert.alert(`${res.data[0].name}님 환영합니다`);
-          navigation.push('User', { name: res.data[0].name });
         }
       });
+  };
+
+  const handleClickRegister = () => {
+    navigation.push('Register');
   };
 
   return (
@@ -59,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
               textAlign: 'center',
             }}
           >
-            LET'S LOGIN
+            USER INFO
           </Text>
         </View>
         <View style={styles.input}>
@@ -83,6 +96,14 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+      <TouchableOpacity
+        style={{ position: 'absolute', bottom: '30%', width: '100%' }}
+        onPress={handleClickRegister}
+      >
+        <Text style={{ ...textStyle, textAlign: 'center', color: 'gray' }}>
+          아직 계정이 없다구요? 가입을 해주세요!
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -1,40 +1,45 @@
+import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screen/HomeScreen';
-import LoginScreen from './screen/LoginScreen';
-import RegisterScreen from './screen/RegisterScreen';
-import User from './screen/User';
+import SplashScreen from './screen/SplashScreen';
+import MainScreen from './screen/Main/Main';
+import AuthScreen from './screen/Auth/Auth';
 import { headerStyle } from './config/globalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const [isLogin, setIsLogin] = useState(false);
+
+  const getLogin = async () => {
+    if ((await AsyncStorage.getItem('user_id')) !== null) {
+      setIsLogin(true);
+    }
+  };
+
+  useEffect(() => {
+    getLogin();
+    console.log('good');
+  }, []);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
+      <Stack.Navigator initialRouteName='Splash'>
         <Stack.Screen
-          name='Home'
-          component={HomeScreen}
-          options={{ title: 'WELCOME', ...headerStyle }}
+          name='Splash'
+          component={SplashScreen}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Login'
-          component={LoginScreen}
-          options={{
-            title: '로그인',
-            ...headerStyle,
-            headerBackVisible: false,
-          }}
+          name='Main'
+          component={MainScreen}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Register'
-          component={RegisterScreen}
-          options={{ title: '회원가입', ...headerStyle }}
-        />
-        <Stack.Screen
-          name='User'
-          component={User}
-          options={{ ...headerStyle }}
+          name='Auth'
+          component={AuthScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -42,3 +47,4 @@ const App = () => {
 };
 
 export default App;
+
