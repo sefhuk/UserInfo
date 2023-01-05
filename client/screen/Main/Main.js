@@ -4,7 +4,7 @@ import { headerStyle } from '../../config/globalStyles';
 
 const Stack = createNativeStackNavigator();
 
-const MainScreen = ({ route }) => {
+const Main = () => {
   return (
     <Stack.Navigator initialRouteName='User'>
       <Stack.Screen
@@ -16,4 +16,4 @@ const MainScreen = ({ route }) => {
   );
 };
 
-export default MainScreen;
+export default Main;

@@ -1,17 +1,17 @@
 export const containerStyle = {
   flex: 1,
-  backgroundColor: 'black',
+  backgroundColor: '#000000',
 };
 
 export const textStyle = {
-  color: 'white',
+  color: '#ffffff',
 };
 
 export const headerStyle = {
   headerStyle: {
-    backgroundColor: 'black',
+    backgroundColor: '#000000',
   },
-  headerTintColor: 'white',
+  headerTintColor: '#ffffff',
   headerTitleStyle: {
     fontSize: 20,
   },

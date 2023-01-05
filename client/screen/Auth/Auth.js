@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
@@ -6,7 +5,7 @@ import { headerStyle } from '../../config/globalStyles';
 
 const Stack = createNativeStackNavigator();
 
-const AuthScreen = () => {
+const Auth = () => {
   return (
     <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen
@@ -19,4 +18,4 @@ const AuthScreen = () => {
   );
 };
 
-export default AuthScreen;
+export default Auth;

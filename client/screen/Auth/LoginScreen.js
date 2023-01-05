@@ -20,7 +20,6 @@ const LoginScreen = ({ navigation }) => {
   const save = async (user) => {
     try {
       await AsyncStorage.setItem('user', JSON.stringify(user));
-      console.log('good save');
     } catch (e) {
       console.log(e);
     }
@@ -50,6 +49,9 @@ const LoginScreen = ({ navigation }) => {
           navigation.replace('Main');
           Alert.alert(`${res.data[0].name}님 환영합니다`);
         }
+      })
+      .catch(() => {
+        Alert.alert('서버나 키세요 ㅡㅡ');
       });
   };
 
@@ -122,8 +124,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: '20%',
     borderWidth: 2,
-    borderColor: 'white',
-    color: 'white',
+    borderColor: '#ffffff',
+    color: '#ffffff',
   },
   submit: {
     justifyContent: 'center',
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
     width: '60%',
     height: '80%',
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: '#ffffff',
     borderRadius: 10,
   },
 });
