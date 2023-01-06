@@ -15,6 +15,7 @@ import {
 } from 'react-native-responsive-screen';
 import { containerStyle, textStyle } from '../../config/globalStyles';
 import axios from 'axios';
+import { HTTP_HOST } from '@env';
 
 const RegisterScreen = ({ navigation }) => {
   const [id, setId] = useState('');
@@ -73,7 +74,7 @@ const RegisterScreen = ({ navigation }) => {
       Alert.alert('아이디를 입력하세요');
     } else {
       axios
-        .get('http://hyuk.ml:19001/account/register/checkId', {
+        .get(`${HTTP_HOST}/account/register/checkId`, {
           params: {
             id: id,
           },
@@ -222,4 +223,3 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterScreen;
-

@@ -12,6 +12,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { containerStyle, textStyle } from '../../config/globalStyles';
 import axios from 'axios';
+import { HTTP_HOST } from '@env';
 
 const LoginScreen = ({ navigation }) => {
   const [id, setId] = useState('');
@@ -35,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleClickLogin = () => {
     axios
-      .get(`http://hyuk.ml:19001/account/login`, {
+      .get(`${HTTP_HOST}/account/login`, {
         params: {
           id: id,
           password: password,

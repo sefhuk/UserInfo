@@ -25,11 +25,10 @@ const SplashScreen = ({ navigation }) => {
             marginBottom: 40,
           }}
         />
-        <ActivityIndicator animating={anim} size='large' />
+        <ActivityIndicator size='large' />
       </View>
     </SafeAreaView>
   );
 };
 
 export default SplashScreen;
-
