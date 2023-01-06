@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './screen/SplashScreen';
 import MainScreen from './screen/Main/Main';
-import AuthScreen from './screen/Auth/Auth';
+import Auth from './screen/\bAuth/Auth';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +22,7 @@ const App = () => {
         />
         <Stack.Screen
           name='Auth'
-          component={AuthScreen}
+          component={Auth}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -13,7 +13,11 @@ const Auth = () => {
         component={LoginScreen}
         options={{ title: '로그인', ...headerStyle }}
       />
-      <Stack.Screen name='Register' component={RegisterScreen} />
+      <Stack.Screen
+        name='Register'
+        component={RegisterScreen}
+        options={{ title: '회원가입', ...headerStyle }}
+      />
     </Stack.Navigator>
   );
 };

@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { SafeAreaView, View, Image, ActivityIndicator } from 'react-native';
 import { containerStyle } from '../config/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({ navigation }) => {
-  const [anim, setAnim] = useState(true);
-
   useEffect(() => {
     setTimeout(() => {
-      setAnim(false);
       AsyncStorage.getItem('user').then((result) => {
         navigation.replace(result === null ? 'Auth' : 'Main');
       });
@@ -35,3 +32,4 @@ const SplashScreen = ({ navigation }) => {
 };
 
 export default SplashScreen;
+
