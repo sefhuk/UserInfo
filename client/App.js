@@ -1,3 +1,4 @@
+import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './screen/SplashScreen';
@@ -7,24 +8,16 @@ import Auth from './screen/\bAuth/Auth';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  LogBox.ignoreLogs(['Remote debugger']);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Splash'>
-        <Stack.Screen
-          name='Splash'
-          component={SplashScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='Main'
-          component={MainScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='Auth'
-          component={Auth}
-          options={{ headerShown: false }}
-        />
+      <Stack.Navigator
+        initialRouteName='Splash'
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name='Splash' component={SplashScreen} />
+        <Stack.Screen name='Main' component={MainScreen} />
+        <Stack.Screen name='Auth' component={Auth} />
       </Stack.Navigator>
     </NavigationContainer>
   );

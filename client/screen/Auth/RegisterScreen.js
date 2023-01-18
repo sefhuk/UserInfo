@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   TextInput,
@@ -13,6 +12,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { containerStyle, textStyle } from '../../config/globalStyles';
 import axios from 'axios';
 import { HTTP_HOST } from '@env';
@@ -116,11 +116,11 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ ...containerStyle }}>
+    <SafeAreaView style={{ ...containerStyle, paddingHorizontal: wp('3%') }}>
       <KeyboardAwareScrollView
         style={{ flex: 1 }}
         keyboardShouldPersistTaps='always'
-        contentContainerStyle={{ height: hp('70%') }}
+        contentContainerStyle={{ height: hp('90%') }}
       >
         <View style={{ marginVertical: hp('3%'), position: 'relative' }}>
           <Text style={{ ...textStyle, ...styles.text }}>로그인 정보</Text>
@@ -137,7 +137,11 @@ const RegisterScreen = ({ navigation }) => {
             onPress={checkDuplication}
           >
             <Text
-              style={{ ...textStyle, textAlign: 'center', fontWeight: ' bold' }}
+              style={{
+                ...textStyle,
+                textAlign: 'center',
+                fontWeight: ' bold',
+              }}
             >
               중복확인
             </Text>
@@ -153,7 +157,7 @@ const RegisterScreen = ({ navigation }) => {
             style={styles.textInput}
             placeholder='비밀번호'
             placeholderTextColor='gray'
-            secureTextEntry='true'
+            secureTextEntry={true}
             onChangeText={handleChangePwInput}
           />
           <TextInput
@@ -188,7 +192,7 @@ const RegisterScreen = ({ navigation }) => {
             <Text
               style={{
                 ...textStyle,
-                fontSize: '30%',
+                fontSize: wp('8%'),
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}
@@ -207,17 +211,17 @@ const styles = StyleSheet.create({
   text: { fontSize: wp('8%'), fontWeight: 'bold', marginBottom: hp('1%') },
   textInput: {
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: '#ffffff',
     height: hp('6%'),
     marginBottom: hp('2%'),
     paddingLeft: '3%',
-    fontSize: '20%',
-    color: 'white',
+    fontSize: wp('5%'),
+    color: '#ffffff',
   },
   button: {
     height: hp('7%'),
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: '#ffffff',
     justifyContent: 'center',
   },
 });
