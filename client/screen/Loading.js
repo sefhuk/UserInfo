@@ -1,5 +1,5 @@
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
-import { containerStyle, textStyle } from '../config/globalStyles';
+import { View, Text } from 'react-native';
+import { textStyle } from '../config/globalStyles';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

@@ -8,7 +8,6 @@ import {
   Alert,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -23,12 +22,6 @@ import { HTTP_HOST } from '@env';
 const LoginScreen = ({ navigation }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [parentHeight, setParentHeight] = useState(0);
-
-  const onLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    setParentHeight(height);
-  };
 
   const save = async (user) => {
     try {
@@ -59,8 +52,16 @@ const LoginScreen = ({ navigation }) => {
           Alert.alert('회원정보가 일치하지 않습니다');
         } else {
           save(res.data[0]);
-          navigation.replace('Main');
-          Alert.alert(`${res.data[0].name}님 환영합니다`);
+          Alert.alert(
+            `${res.data[0].name}님 환영합니다`,
+            '확인버튼을 눌러주세요',
+            [
+              {
+                text: '확인',
+                onPress: () => navigation.replace('Main'),
+              },
+            ]
+          );
         }
       })
       .catch(() => {
@@ -70,6 +71,10 @@ const LoginScreen = ({ navigation }) => {
 
   const handleClickRegister = () => {
     navigation.push('Register');
+  };
+
+  const handleClickFindAccount = () => {
+    navigation.push('FindAccount');
   };
 
   return (
@@ -106,19 +111,36 @@ const LoginScreen = ({ navigation }) => {
             secureTextEntry={true}
           />
         </View>
-        <View style={styles.submit}>
-          <TouchableOpacity style={styles.button} onPress={handleClickLogin}>
+        <View style={styles.login}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleClickLogin}
+          >
             <Text style={{ ...textStyle, fontSize: wp('7%') }}>로그인</Text>
           </TouchableOpacity>
         </View>
-        <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: wp('100%'),
+            paddingHorizontal: wp('12%'),
+            marginTop: hp('2%'),
+          }}
+        >
           <TouchableOpacity
-            style={{ marginTop: hp('5%') }}
+            style={styles.forgetButton}
+            onPress={handleClickFindAccount}
+          >
+            <Text style={{ color: 'gray', fontWeight: 'bold' }}>
+              아이디/비밀번호 찾기
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.registerButton}
             onPress={handleClickRegister}
           >
-            <Text style={{ ...textStyle, textAlign: 'center', color: 'gray' }}>
-              아직 계정이 없다구요? 가입을 해주세요!
-            </Text>
+            <Text style={{ color: 'gray', fontWeight: 'bold' }}>회원가입</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
@@ -147,16 +169,14 @@ const styles = StyleSheet.create({
     borderColor: '#ffffff',
     color: '#ffffff',
   },
-  submit: {
-    justifyContent: 'center',
+  login: {
     alignItems: 'center',
-    height: hp('8%'),
   },
-  button: {
+  loginButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '60%',
-    height: '80%',
+    width: wp('80%'),
+    height: hp('6%'),
     borderWidth: 2,
     borderColor: '#ffffff',
     borderRadius: 10,

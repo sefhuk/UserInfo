@@ -9,7 +9,7 @@ const Main = () => {
   return (
     <Stack.Navigator
       initialRouteName='User'
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, headerBackVisible: false }}
     >
       <Stack.Screen
         name='User'
@@ -22,7 +22,6 @@ const Main = () => {
         options={{
           title: 'MY LOCATION',
           ...headerStyle,
-          headerBackVisible: false,
         }}
       />
     </Stack.Navigator>

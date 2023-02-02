@@ -1,4 +1,3 @@
-const e = require('express');
 const express = require('express');
 const connection = require('./db');
 require('dotenv').config();
@@ -15,10 +14,6 @@ router.get('/login', (req, res) => {
       res.send(result);
     }
   );
-});
-
-router.post('/login', (req, res) => {
-  console.log(req.body);
 });
 
 module.exports = router;

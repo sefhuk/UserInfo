@@ -8,6 +8,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       AsyncStorage.getItem('user').then((result) => {
+        console.log(result);
         navigation.replace(result === null ? 'Auth' : 'Main');
       });
     }, 3000);

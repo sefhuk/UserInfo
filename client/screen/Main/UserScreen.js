@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   Alert,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   View,
@@ -9,50 +8,50 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { textStyle, containerStyle } from '../../config/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import * as Location from 'expo-location';
 
 const UserScreen = ({ navigation }) => {
   const [name, setName] = useState('');
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [location, setLocation] = useState([]);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const fadeZ = useRef(new Animated.Value(-1)).current;
+  const fadeAnim = useRef(new Animated.Value(0.9)).current;
+  const fadeZ = useRef(new Animated.Value(1)).current;
 
-  const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      setErrorMsg('Permission to access location was denied');
-      return;
+  const ask = async () => {
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+    if (!granted) {
+      navigation.replace('Auth');
+    }
+    const { coords } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+    setLocation(coords);
+  };
 
-      const {
-        coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({ accuracy: 5 });
-      const locations = await Location.reverseGeocodeAsync(
-        { latitude, longitude },
-        { useGoogleMaps: false }
-      );
-      setLocation(locations[0].region);
+  const fadeAnimOut = () => {
+    if (location.length !== 0) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
     }
   };
 
-  const fadeIn = () => {
-    Animated.timing(fadeZ, {
-      toValue: 0,
-      duration: 700,
-      useNativeDriver: false,
-    }).start(() => {
-      Animated.timing(fadeAnim, {
-        toValue: 0.9,
-        duration: 700,
+  const fadeZOut = () => {
+    if (location.length !== 0) {
+      console.log(location);
+      Animated.timing(fadeZ, {
+        toValue: -1,
+        duration: 1000,
         useNativeDriver: false,
       }).start();
-    });
+    }
   };
 
   const getUserName = async () => {
@@ -76,12 +75,21 @@ const UserScreen = ({ navigation }) => {
   };
 
   const handleClickLocation = () => {
-    navigation.push('Location');
+    navigation.push('Location', {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    });
   };
 
   useEffect(() => {
     getUserName();
+    ask();
   }, []);
+
+  useEffect(() => {
+    fadeZOut();
+    fadeAnimOut();
+  }, [location]);
 
   return (
     <SafeAreaView style={containerStyle}>
@@ -107,10 +115,15 @@ const UserScreen = ({ navigation }) => {
             style={styles.contentButton}
             onPress={handleClickLocation}
           >
-            <Text style={[textStyle, styles.contentText]}>Location</Text>
+            <Text style={[textStyle, styles.contentText]}>대중교통</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.contentButton} onPress={fadeIn}>
-            <Text style={[textStyle, styles.contentText]}>. . .</Text>
+          <TouchableOpacity
+            style={styles.contentButton}
+            onPress={() => {
+              navigation.navigate('Location', { locations: location });
+            }}
+          >
+            <Text style={[textStyle, styles.contentText]}>위치</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contentButton}>
             <Text style={[textStyle, styles.contentText]}>. . .</Text>
@@ -153,7 +166,7 @@ const UserScreen = ({ navigation }) => {
             fontWeight: 'bold',
           }}
         >
-          정보를 받아오고 있습니다
+          위치정보를 받아오고 있습니다
         </Text>
       </Animated.View>
     </SafeAreaView>

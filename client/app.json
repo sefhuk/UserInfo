@@ -16,7 +16,9 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "'bundleIdentifier": "com.hyuk.userinfo",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,3 +31,4 @@
     }
   }
 }
+

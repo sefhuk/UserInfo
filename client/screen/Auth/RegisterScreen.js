@@ -12,7 +12,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { containerStyle, textStyle } from '../../config/globalStyles';
 import axios from 'axios';
 import { HTTP_HOST } from '@env';
@@ -96,7 +96,7 @@ const RegisterScreen = ({ navigation }) => {
       if (!isIdDuplication) {
         // Alert.alert('모든 정보가 입력되었습니다');
         axios
-          .post('http://hyuk.ml:19001/account/register', {
+          .post(`${HTTP_HOST}/account/register`, {
             id: id,
             password: pw,
             name: name,
