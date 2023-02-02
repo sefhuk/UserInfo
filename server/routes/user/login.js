@@ -1,6 +1,5 @@
 const express = require('express');
 const connection = require('./db');
-require('dotenv').config();
 
 const router = express.Router();
 

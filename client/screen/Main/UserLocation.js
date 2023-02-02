@@ -124,22 +124,11 @@ const UserLocation = () => {
                     latitude: mark[element].latitude,
                     longitude: mark[element].longitude,
                   }}
-                  // image={require('../../assets/mirae.png')}
                   pinColor={'orange'}
                   size={1}
                 />
               );
             })}
-            {/* {clickedMarker ? (
-              <Marker
-                title='clicked'
-                description='clicked'
-                coordinate={clickedMarker}
-                pinColor='gray'
-              />
-            ) : (
-              <></>
-            )} */}
           </MapView>
         </View>
         <ScrollView

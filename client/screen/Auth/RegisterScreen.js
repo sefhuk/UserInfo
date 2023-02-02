@@ -94,7 +94,6 @@ const RegisterScreen = ({ navigation }) => {
   const handleClickRegister = () => {
     if (id && pw && email && name && pn.completed) {
       if (!isIdDuplication) {
-        // Alert.alert('모든 정보가 입력되었습니다');
         axios
           .post(`${HTTP_HOST}/account/register`, {
             id: id,
