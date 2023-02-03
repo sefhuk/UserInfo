@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -23,12 +23,8 @@ const LoginScreen = ({ navigation }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
-  const save = async (user) => {
-    try {
-      await AsyncStorage.setItem('user', JSON.stringify(user));
-    } catch (e) {
-      console.log(e);
-    }
+  const saveToken = async (token) => {
+    await AsyncStorage.setItem('user', JSON.stringify(token));
   };
 
   const handleChangeIdInput = (text) => {
@@ -48,12 +44,12 @@ const LoginScreen = ({ navigation }) => {
         },
       })
       .then((res) => {
-        if (!res.data[0]) {
+        if (res.data === 'failed') {
           Alert.alert('회원정보가 일치하지 않습니다');
         } else {
-          save(res.data[0]);
+          saveToken(res.data);
           Alert.alert(
-            `${res.data[0].name}님 환영합니다`,
+            `${res.data.name}님 환영합니다`,
             '확인버튼을 눌러주세요',
             [
               {
@@ -73,9 +69,9 @@ const LoginScreen = ({ navigation }) => {
     navigation.push('Register');
   };
 
-  const handleClickFindAccount = () => {
-    navigation.push('FindAccount');
-  };
+  useEffect(() => {
+    AsyncStorage.clear();
+  }, []);
 
   return (
     <SafeAreaView style={containerStyle}>
@@ -128,10 +124,7 @@ const LoginScreen = ({ navigation }) => {
             marginTop: hp('2%'),
           }}
         >
-          <TouchableOpacity
-            style={styles.forgetButton}
-            onPress={handleClickFindAccount}
-          >
+          <TouchableOpacity style={styles.forgetButton}>
             <Text style={{ color: 'gray', fontWeight: 'bold' }}>
               아이디/비밀번호 찾기
             </Text>
