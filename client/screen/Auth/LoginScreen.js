@@ -12,7 +12,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { containerStyle, textStyle } from '../../config/globalStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -43,11 +42,11 @@ const LoginScreen = ({ navigation }) => {
           password: password,
         },
       })
-      .then((res) => {
+      .then(async (res) => {
         if (res.data === 'failed') {
           Alert.alert('회원정보가 일치하지 않습니다');
         } else {
-          saveToken(res.data);
+          await saveToken(res.data);
           Alert.alert(
             `${res.data.name}님 환영합니다`,
             '확인버튼을 눌러주세요',
@@ -84,7 +83,7 @@ const LoginScreen = ({ navigation }) => {
           <Text
             style={{
               ...textStyle,
-              fontSize: wp('13'),
+              fontSize: wp('13%'),
               fontWeight: 'bold',
               textAlign: 'center',
             }}

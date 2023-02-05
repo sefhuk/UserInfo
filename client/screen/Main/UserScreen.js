@@ -20,6 +20,7 @@ import * as Location from 'expo-location';
 const UserScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [location, setLocation] = useState([]);
+  const [token, setToken] = useState('');
 
   const fadeAnim = useRef(new Animated.Value(0.9)).current;
   const fadeZ = useRef(new Animated.Value(1)).current;
@@ -45,7 +46,6 @@ const UserScreen = ({ navigation }) => {
 
   const fadeZOut = () => {
     if (location.length !== 0) {
-      console.log(location);
       Animated.timing(fadeZ, {
         toValue: -1,
         duration: 1000,
@@ -54,20 +54,16 @@ const UserScreen = ({ navigation }) => {
     }
   };
 
-  const getUserName = async () => {
-    try {
-      await AsyncStorage.getItem('user', (err, result) => {
-        setName(JSON.parse(result));
-      });
-    } catch (e) {
-      console.log(e);
-    }
+  const setUser = async () => {
+    let result = await AsyncStorage.getItem('user');
+    setName(JSON.parse(result).name);
+    setToken(JSON.parse(result).accessToken);
   };
 
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear();
-      Alert.alert('Logout');
+      Alert.alert('로그아웃 되었습니다');
       navigation.replace('Splash');
     } catch (e) {
       console.log(e);
@@ -78,11 +74,12 @@ const UserScreen = ({ navigation }) => {
     navigation.push('Location', {
       latitude: location.latitude,
       longitude: location.longitude,
+      token: token,
     });
   };
 
   useEffect(() => {
-    getUserName();
+    setUser();
     ask();
   }, []);
 
@@ -101,7 +98,7 @@ const UserScreen = ({ navigation }) => {
           />
           <Text
             style={{ ...textStyle, fontSize: wp('10%'), fontWeight: 'bold' }}
-          >{`${name.name} 님`}</Text>
+          >{`${name} 님`}</Text>
         </View>
         <View
           style={{
@@ -115,15 +112,10 @@ const UserScreen = ({ navigation }) => {
             style={styles.contentButton}
             onPress={handleClickLocation}
           >
-            <Text style={[textStyle, styles.contentText]}>대중교통</Text>
+            <Text style={[textStyle, styles.contentText]}>Location</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.contentButton}
-            onPress={() => {
-              navigation.navigate('Location', { locations: location });
-            }}
-          >
-            <Text style={[textStyle, styles.contentText]}>위치</Text>
+          <TouchableOpacity style={styles.contentButton}>
+            <Text style={[textStyle, styles.contentText]}>. . .</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contentButton}>
             <Text style={[textStyle, styles.contentText]}>. . .</Text>
