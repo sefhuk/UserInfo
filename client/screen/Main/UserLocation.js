@@ -1,5 +1,12 @@
-import { useState, useEffect } from 'react';
-import { View, ScrollView, Text } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { containerStyle, textStyle } from '../../config/globalStyles';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
@@ -12,26 +19,42 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { GOOGLE_API_KEY, HTTP_HOST } from '@env';
+import { imagePath } from '../../config/imagePath';
 
 Location.setGoogleApiKey(GOOGLE_API_KEY);
 
-const UserLocation = () => {
-  const [mark, setMark] = useState({});
-  const [pos, setPos] = useState({
-    latitude: 37.2092017,
-    longitude: 126.9769365,
+const UserLocation = ({ route }) => {
+  const [markers, setMarkers] = useState({});
+  const [userPos, setUserPos] = useState({
+    latitude: route.params.latitude, //37.20942786630357
+    longitude: route.params.longitude, // 126.97946182203637
   });
   const [distance, setDistance] = useState([]);
+  const [scrollViewVisible, setScrollViewVisible] = useState(true);
+
+  const fadeScrollView = useRef(new Animated.Value(hp('-39%'))).current;
+
+  const fadeScrollViewOut = () => {
+    Animated.timing(fadeScrollView, {
+      toValue: scrollViewVisible ? hp('1%') : hp('-39%'),
+      duration: 350,
+      useNativeDriver: false,
+    }).start();
+    scrollViewVisible
+      ? setScrollViewVisible(false)
+      : setScrollViewVisible(true);
+  };
 
   const getRank = () => {
     let dis = [];
-    Object.keys(mark).map((element) => {
-      let obj = mark[element];
+    Object.keys(markers).map((element) => {
+      let obj = markers[element];
       let distanceObj = { name: element };
-      distanceObj.distance = getPreciseDistance(pos, {
+      distanceObj.distance = getPreciseDistance(userPos, {
         latitude: obj.latitude,
         longitude: obj.longitude,
       });
+      distanceObj.image = imagePath[element];
       dis.push(distanceObj);
     });
     dis.sort((a, b) => a.distance - b.distance);
@@ -49,41 +72,47 @@ const UserLocation = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         };
-        setPos(newPos);
+        setUserPos(newPos);
       }
     );
   };
 
   useEffect(() => {
-    axios.get(`${HTTP_HOST}/location/list`).then((res) => {
-      let data = {};
-      res.data.forEach((element) => {
-        data[element.engName] = {
-          newName: element.newName,
-          oldName: element.oldName,
-          latitude: +element.latitude,
-          longitude: +element.longitude,
-        };
+    axios
+      .get(`${HTTP_HOST}/location/list`, {
+        headers: {
+          Authorization: route.params.token,
+        },
+      })
+      .then((res) => {
+        let data = {};
+        res.data.forEach((element) => {
+          data[element.engName] = {
+            newName: element.newName,
+            oldName: element.oldName,
+            latitude: +element.latitude,
+            longitude: +element.longitude,
+          };
+        });
+        setMarkers(data);
       });
-      setMark(data);
-    });
     getPosition();
   }, []);
 
   useEffect(() => {
     getRank();
-  }, [pos]);
+  }, [userPos]);
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={containerStyle}>
         <View>
           <MapView
-            style={{ width: '100%', height: hp('100%') }}
+            style={{ width: '100%', height: hp('90%') }}
             provider={PROVIDER_GOOGLE}
             initialRegion={{
-              latitude: pos.latitude,
-              longitude: pos.longitude,
+              latitude: userPos.latitude,
+              longitude: userPos.longitude,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
@@ -92,19 +121,13 @@ const UserLocation = () => {
               longitude: 126.9769365,
             }}
             userInterfaceStyle='light'
-            onMarkerPress={(event) => {
-              console.log(event.nativeEvent);
-            }}
-            onMarkerSelect={(event) => {
-              console.log(event.nativeEvent);
-            }}
           >
             <Marker
               title='내 위치'
-              description={`${pos.latitude}, ${pos.longitude}`}
+              description={`${userPos.latitude}, ${userPos.longitude}`}
               coordinate={{
-                latitude: pos.latitude,
-                longitude: pos.longitude,
+                latitude: userPos.latitude,
+                longitude: userPos.longitude,
               }}
             >
               <MaterialCommunityIcons
@@ -113,16 +136,16 @@ const UserLocation = () => {
                 color='blue'
               />
             </Marker>
-            {Object.keys(mark).map((element) => {
-              let obj = mark[element];
+            {Object.keys(markers).map((element) => {
+              let obj = markers[element];
               return (
                 <Marker
                   key={element}
                   title={obj.newName}
                   description={`${obj.oldName}`}
                   coordinate={{
-                    latitude: mark[element].latitude,
-                    longitude: mark[element].longitude,
+                    latitude: markers[element].latitude,
+                    longitude: markers[element].longitude,
                   }}
                   pinColor={'orange'}
                   size={1}
@@ -131,29 +154,62 @@ const UserLocation = () => {
             })}
           </MapView>
         </View>
-        <ScrollView
+        <Animated.View
           style={{
             width: '100%',
-            height: '40%',
+            height: hp('45%'),
             position: 'absolute',
-            bottom: 0,
-            backgroundColor: 'black',
-            opacity: 0.5,
+            bottom: fadeScrollView,
+            // backgroundColor: 'white',
           }}
         >
-          {distance.map((element) => (
-            <Text
+          <TouchableOpacity
+            onPress={fadeScrollViewOut}
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: hp('6%'),
+              backgroundColor: '#F4EDEC',
+            }}
+            activeOpacity={0.8}
+          >
+            <View
               style={{
-                ...textStyle,
-                fontWeight: 'bold',
-                paddingLeft: wp('15%'),
+                width: wp('20%'),
+                height: hp('0.3%'),
+                backgroundColor: 'gray',
+                borderRadius: '50%',
               }}
-              key={element.name}
-            >{`${mark[element.name].newName}   :   ${
-              element.distance
-            }m..`}</Text>
-          ))}
-        </ScrollView>
+            />
+          </TouchableOpacity>
+          <ScrollView bounces={'false'} style={{ backgroundColor: '#F4EDEC' }}>
+            {distance.map((element) => {
+              return (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    borderWidth: 1,
+                    marginBottom: 1,
+                  }}
+                  key={element.name}
+                >
+                  <Image
+                    style={{ width: wp('20%'), height: wp('20%') }}
+                    source={element.image}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      paddingLeft: wp('15%'),
+                    }}
+                  >{`${markers[element.name].newName}   :   ${
+                    element.distance
+                  }m..`}</Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </Animated.View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
