@@ -12,10 +12,14 @@ app.use(bodyParser.json());
 const indexRouter = require('./routes/index');
 const loginRouter = require('./routes/user/login');
 const registerRouter = require('./routes/user/register');
+const buildingRouter = require('./routes/location/building');
+const tokenVerifyRouter = require('./routes/user/tokenVerify');
 
 app.use('/', indexRouter);
 app.use('/account', loginRouter);
 app.use('/account', registerRouter);
+app.use('/acount', tokenVerifyRouter);
+app.use('/location', buildingRouter);
 
 app.listen(port, () => {
   console.log('server start!  port: ', port);
